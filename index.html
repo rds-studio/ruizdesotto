@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VFX STUDIO — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#050508;--deep:#0a0a10;--panel:#0f0f18;
+  --border:rgba(255,255,255,0.07);
+  --accent:#b0b0b0;--accent2:#ff3c5f;--accent3:#b0b0b0;
+  --text:#e8e8f0;--muted:rgba(232,232,240,0.45);
+  --mono:'JetBrains Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --body:'Syne',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--text);font-family:var(--body);overflow-x:hidden;cursor:none}
+
+/* CURSOR */
+#cursor{position:fixed;width:12px;height:12px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;mix-blend-mode:difference}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%)}
+
+/* NOISE + SCAN */
+body::before{content:'';position:fixed;inset:0;opacity:.6;pointer-events:none;z-index:9000;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E")}
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:8999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px)}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1.5rem 3rem;background:linear-gradient(to bottom,rgba(5,5,8,.95),transparent);backdrop-filter:blur(2px)}
+.nav-logo{font-family:var(--display);font-size:1.6rem;letter-spacing:.12em}
+.nav-logo span{color:var(--accent)}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-family:var(--mono);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.nav-links a:hover{color:var(--accent)}
+.nav-cta{font-family:'Arial Black',sans-serif;font-size:.78rem;font-weight:900;letter-spacing:.05em;color:var(--black);background:var(--accent);padding:.55rem 1.4rem;text-decoration:none;transition:background .2s,transform .15s;display:inline-block}
+.nav-cta:hover{background:#fff;transform:scale(1.04)}
+
+/* HERO */
+#hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8rem 3rem 4rem;position:relative;overflow:hidden}
+.hero-bg-lines{position:absolute;inset:0;background:linear-gradient(90deg,var(--border) 1px,transparent 1px),linear-gradient(var(--border) 1px,transparent 1px);background-size:80px 80px;opacity:.4}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:60vw;height:60vw;background:radial-gradient(ellipse,rgba(232,255,0,.06),transparent 60%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:-10%;left:5%;width:40vw;height:40vw;background:radial-gradient(ellipse,rgba(0,212,255,.05),transparent 60%);pointer-events:none}
+.hero-content{position:relative;z-index:1}
+.hero-tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .2s forwards}
+.hero-tag::before{content:'';width:30px;height:1px;background:var(--accent)}
+.hero-title{font-family:var(--display);font-size:clamp(4.5rem,9vw,10rem);line-height:.92;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .4s forwards}
+.hero-title .line-accent{color:var(--accent)}
+.hero-title .outline{-webkit-text-stroke:1px rgba(232,232,240,.35);color:transparent}
+.hero-desc{font-size:1rem;line-height:1.7;color:var(--muted);max-width:440px;margin-bottom:2.5rem;opacity:0;animation:fadeUp .8s .6s forwards}
+.hero-actions{display:flex;gap:1rem;opacity:0;animation:fadeUp .8s .8s forwards}
+.btn-primary{font-family:var(--mono);font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;color:var(--black);background:var(--accent);padding:1rem 2rem;text-decoration:none;transition:box-shadow .2s}
+.btn-primary:hover{box-shadow:0 8px 30px rgba(232,255,0,.3)}
+.btn-secondary{font-family:var(--mono);font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;color:var(--text);border:1px solid var(--border);padding:1rem 2rem;text-decoration:none;transition:border-color .2s}
+.btn-secondary:hover{border-color:var(--text)}
+
+/* HERO REEL PREVIEW */
+.hero-reel{position:relative;z-index:1;aspect-ratio:16/9;background:var(--panel);border:1px solid var(--border);overflow:hidden;opacity:0;animation:fadeIn 1s .8s forwards;cursor:pointer}
+.reel-visual-bg{position:absolute;inset:0}
+.reel-orb{position:absolute;border-radius:50%;filter:blur(40px)}
+.orb1{width:200px;height:200px;background:rgba(232,255,0,.12);top:-50px;right:-50px;animation:orb1 6s ease-in-out infinite}
+.orb2{width:150px;height:150px;background:rgba(255,60,95,.10);bottom:20px;left:30px;animation:orb2 8s ease-in-out infinite}
+.orb3{width:180px;height:180px;background:rgba(0,212,255,.08);top:50%;left:50%;transform:translate(-50%,-50%);animation:orb3 7s ease-in-out infinite}
+@keyframes orb1{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,30px)}}
+@keyframes orb2{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-20px)}}
+@keyframes orb3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.2)}}
+.reel-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(5,5,8,.4);transition:background .3s;z-index:5}
+.hero-reel:hover .reel-overlay{background:rgba(5,5,8,.2)}
+.play-btn{width:70px;height:70px;border:2px solid var(--accent);display:flex;align-items:center;justify-content:center;background:rgba(232,255,0,.08);transition:transform .2s}
+.hero-reel:hover .play-btn{transform:scale(1.1)}
+.play-btn svg{margin-left:4px}
+.reel-label{position:absolute;bottom:1rem;left:1rem;font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);z-index:5}
+.reel-label strong{color:var(--accent)}
+
+/* HERO STATS */
+.hero-stats{position:absolute;bottom:3rem;left:3rem;right:3rem;display:flex;gap:3rem;border-top:1px solid var(--border);padding-top:2rem;opacity:0;animation:fadeUp .8s 1s forwards}
+.stat{display:flex;flex-direction:column;gap:.2rem}
+.stat-num{font-family:var(--display);font-size:2.2rem;color:var(--accent);line-height:1}
+.stat-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
+
+/* SHARED SECTION STYLES */
+section{position:relative}
+.section-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:3rem;padding-bottom:1.5rem;border-bottom:1px solid var(--border)}
+.section-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.6rem}
+.section-title{font-family:var(--display);font-size:clamp(2.5rem,5vw,4.5rem);line-height:.95}
+.section-link{font-family:var(--mono);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:.5rem;transition:color .2s}
+.section-link:hover{color:var(--accent)}
+.section-link::after{content:'→'}
+
+/* REELS GRID */
+#reels{padding:6rem 3rem;background:var(--deep)}
+.reels-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.reel-card{position:relative;aspect-ratio:16/9;overflow:hidden;cursor:pointer}
+/* Featured: full width row, max-width centered, bigger title */
+.reel-card.featured{grid-column:1 / -1;max-width:70%;margin:0 auto;width:100%}
+.reel-card.featured .reel-card-title{font-size:2.2rem}
+.reel-card.featured .reel-card-meta{font-size:.75rem}
+
+/* Gradient fallback backgrounds */
+.reel-card-bg{position:absolute;inset:0}
+.rc-1{background:linear-gradient(135deg,#0d0d18,#1a0a25,#080e1e)}
+.rc-2{background:linear-gradient(135deg,#0a1a0a,#0d2510,#0a0d0a)}
+.rc-3{background:linear-gradient(135deg,#1a0a0a,#250d0a,#1a0808)}
+.rc-4{background:linear-gradient(135deg,#0a0a1a,#100d25,#0a0a18)}
+
+/* THUMBNAIL (shown over gradient when loaded) */
+.reel-thumb{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;transition:opacity .4s, transform .5s ease;z-index:1}
+.reel-thumb.loaded{opacity:1}
+.reel-card:hover .reel-thumb{transform:scale(1.05)}
+.reel-thumb-tint{position:absolute;inset:0;z-index:2;background:linear-gradient(to top,rgba(5,5,8,.9) 0%,rgba(5,5,8,.45) 50%,rgba(5,5,8,.2) 100%)}
+
+.reel-card-overlay{position:absolute;inset:0;z-index:3;transition:background .3s}
+.reel-card:hover .reel-card-overlay{background:rgba(232,255,0,.03)}
+.reel-card-content{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;justify-content:space-between;padding:1.2rem}
+.reel-card-top{display:flex;justify-content:space-between;align-items:flex-start}
+.reel-badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid;backdrop-filter:blur(8px)}
+.badge-vfx{color:var(--accent);border-color:rgba(232,255,0,.4);background:rgba(232,255,0,.06)}
+.badge-motion{color:var(--accent3);border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.06)}
+.badge-comp{color:var(--accent2);border-color:rgba(255,60,95,.4);background:rgba(255,60,95,.06)}
+.badge-3d{color:#b57aff;border-color:rgba(181,122,255,.4);background:rgba(181,122,255,.06)}
+.reel-play{width:42px;height:42px;border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);opacity:0;transform:scale(.85);transition:opacity .2s,transform .2s,background .2s}
+.reel-card:hover .reel-play{opacity:1;transform:scale(1);background:rgba(232,255,0,.12);border-color:var(--accent)}
+.reel-card-title{font-family:var(--display);font-size:1.4rem;line-height:1;margin-bottom:.4rem;letter-spacing:.02em}
+.reel-card.featured .reel-card-title{font-size:2rem}
+.reel-card-meta{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);display:flex;gap:1rem}
+
+/* POSTER GRID */
+#works{padding:6rem 3rem}
+.works-filter{display:flex;gap:.5rem;margin-bottom:2.5rem;flex-wrap:wrap}
+.filter-btn{font-family:var(--mono);font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;padding:.5rem 1.2rem;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;transition:all .2s}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(232,255,0,.05)}
+
+/* Uniform poster grid — all cards same size, vertical 2:3 ratio */
+.posters-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px}
+.poster-item{position:relative;aspect-ratio:2/3;overflow:hidden;cursor:pointer;transition:opacity .3s,transform .3s;background:var(--panel);border:none}
+
+/* Remove tall/wide overrides — all same size now */
+.poster-item.tall,.poster-item.wide{grid-row:unset;grid-column:unset}
+
+/* Image fills the frame completely, fully visible */
+.poster-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:var(--panel)}
+.work-poster-img{width:100%;height:100%;object-fit:contain;display:block;transition:transform .4s ease}
+.poster-item:hover .work-poster-img{transform:scale(1.03)}
+
+/* Placeholder shown when image is missing */
+.poster-placeholder{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;border:1px dashed rgba(255,255,255,.1)}
+.poster-placeholder-icon{font-size:2.5rem;opacity:.2}
+.poster-placeholder-label{font-family:var(--mono);font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.2)}
+.poster-placeholder-hint{font-family:var(--mono);font-size:.52rem;letter-spacing:.08em;color:var(--accent);opacity:.5;text-align:center;padding:0 1.2rem;line-height:1.6}
+
+/* Info bar slides up on hover */
+.poster-overlay{position:absolute;inset:0;display:flex;align-items:flex-end;pointer-events:none}
+.poster-info{width:100%;padding:1rem 1rem .9rem;background:linear-gradient(to top,rgba(5,5,8,.97) 0%,rgba(5,5,8,.7) 55%,transparent 100%);transform:translateY(100%);transition:transform .3s ease}
+.poster-item:hover .poster-info{transform:translateY(0)}
+.poster-year{font-family:var(--mono);font-size:.58rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);margin-bottom:.25rem}
+.poster-title{font-family:var(--display);font-size:1rem;letter-spacing:.03em;color:var(--text);margin-bottom:.2rem;line-height:1.1}
+.poster-role{font-family:var(--mono);font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+
+/* Accent top-right corner on hover */
+.poster-item::after{content:'';position:absolute;top:0;right:0;width:0;height:0;border-top:2px solid var(--accent);border-right:2px solid var(--accent);transition:width .25s,height .25s;z-index:2}
+.poster-item:hover::after{width:24px;height:24px}
+
+/* ABOUT */
+#about{padding:6rem 3rem;background:var(--deep)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:center}
+.about-visual{position:relative;aspect-ratio:4/5}
+.about-frame{position:absolute;inset:0;background:var(--panel);border:1px solid var(--border);overflow:hidden}
+.about-frame-bg{width:100%;height:100%;background:linear-gradient(135deg,#0f0f20,#1a1030,#0a0f20);position:relative;overflow:hidden}
+.about-frame-bg::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,var(--border) 1px,transparent 1px),linear-gradient(var(--border) 1px,transparent 1px);background-size:30px 30px}
+.about-ornament{position:absolute;top:-1.5rem;right:-1.5rem;width:80px;height:80px;border:1px solid var(--accent);background:var(--black);display:flex;align-items:center;justify-content:center}
+.about-ornament-inner{width:40px;height:40px;border:1px solid var(--accent);transform:rotate(45deg)}
+.about-corner{position:absolute;bottom:-1.5rem;left:-1.5rem;width:60px;height:60px;border-bottom:2px solid var(--accent3);border-left:2px solid var(--accent3)}
+.about-label-side{position:absolute;right:-2rem;top:50%;transform:translateY(-50%) rotate(90deg);font-family:var(--mono);font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.about-text{font-size:1.05rem;line-height:1.8;color:var(--muted);margin-bottom:2rem}
+.about-skills{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:2.5rem}
+.skill-item{padding:.8rem 1rem;border:1px solid var(--border);position:relative;overflow:hidden}
+.skill-item::before{content:'';position:absolute;bottom:0;left:0;height:2px;background:var(--accent);width:var(--w,80%)}
+.skill-name{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.2rem}
+.skill-level{font-family:var(--mono);font-size:.6rem;color:var(--accent)}
+.about-softwares{display:flex;flex-wrap:wrap;gap:.5rem}
+.software-tag{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;padding:.4rem .9rem;border:1px solid var(--border);color:var(--muted);transition:border-color .2s,color .2s}
+.software-tag:hover{border-color:var(--accent3);color:var(--accent3)}
+
+/* CONTACT */
+#contact{padding:6rem 3rem;position:relative;overflow:hidden}
+.contact-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:60vw;height:60vw;background:radial-gradient(ellipse,rgba(232,255,0,.04),transparent 60%);pointer-events:none}
+.contact-section-inner{position:relative;z-index:1}
+
+/* 3-column cards */
+.contact-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;margin-top:0}
+
+.contact-card{display:flex;align-items:center;gap:1.5rem;padding:2rem 2rem;background:var(--panel);border:1px solid var(--border);text-decoration:none;color:var(--text);transition:border-color .2s,background .2s;position:relative;overflow:hidden}
+.contact-card::before{content:'';position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;z-index:0}
+.contact-card:hover{border-color:var(--accent)}
+.contact-card:hover::before{transform:scaleX(1)}
+.contact-card:hover .contact-card-icon,
+.contact-card:hover .contact-card-body,
+.contact-card:hover .contact-card-arrow{color:var(--black);position:relative;z-index:1}
+
+.contact-card-icon{flex-shrink:0;width:48px;height:48px;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--accent);transition:border-color .2s,color .2s;position:relative;z-index:1}
+.contact-card:hover .contact-card-icon{border-color:rgba(0,0,0,.2)}
+
+.contact-card-body{flex:1;position:relative;z-index:1}
+.contact-card-label{font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:.3rem;transition:color .2s}
+.contact-card:hover .contact-card-label{color:rgba(0,0,0,.6)}
+.contact-card-value{font-family:var(--body);font-size:.95rem;color:var(--text);transition:color .2s}
+
+.contact-card-arrow{font-size:1.3rem;color:var(--muted);transition:color .2s,transform .2s;position:relative;z-index:1}
+.contact-card:hover .contact-card-arrow{transform:translateX(4px)}
+
+/* CV card gets accent border by default to stand out */
+/*.contact-card-highlight{border-color:var(--accent)}*/
+/*.contact-card-highlight .contact-card-icon{color:var(--accent);border-color:var(--accent)}*/
+
+.contact-subtitle{font-size:1.05rem;color:var(--muted);line-height:1.7;margin-bottom:2.5rem}
+
+/* Email hover reveal + copy */
+.email-hint{font-size:.55rem;color:var(--accent);opacity:.7;letter-spacing:.1em}
+.email-hidden{color:var(--muted);letter-spacing:.15em;transition:opacity .2s}
+.email-visible{display:none;font-size:.95rem}
+.contact-card:hover .email-hidden{display:none}
+.contact-card:hover .email-visible{display:inline}
+.contact-card:hover .email-hint{opacity:0}
+.copy-icon{font-size:1.1rem;opacity:.5;transition:opacity .2s}
+.contact-card:hover .copy-icon{opacity:1}
+.copy-toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(10px);background:var(--accent);color:var(--black);font-family:var(--mono);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;padding:.7rem 1.5rem;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:9999}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* FOOTER */
+footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:var(--deep)}
+.footer-copy{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.footer-socials{display:flex;gap:1.5rem}
+.footer-socials a{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.footer-socials a:hover{color:var(--accent)}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(5,5,8,.96);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(10px)}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal-box{position:relative;width:80vw;max-width:1000px}
+.modal-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.8rem}
+.modal-video-title{font-family:var(--display);font-size:1.4rem;letter-spacing:.05em;color:var(--text)}
+.modal-close-btn{font-family:var(--mono);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);cursor:pointer;background:none;border:none;display:flex;align-items:center;gap:.5rem;transition:color .2s}
+.modal-close-btn:hover{color:var(--accent2)}
+.modal-video-area{position:relative;aspect-ratio:16/9;background:var(--panel);border:1px solid var(--border);overflow:hidden}
+.modal-video-area iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+/* Thumbnail-click player */
+.yt-facade{position:absolute;inset:0;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.yt-facade-img{position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(.85);transition:filter .2s}
+.yt-facade:hover .yt-facade-img{filter:brightness(1)}
+.yt-facade-btn{position:relative;z-index:2;width:72px;height:72px;background:#ff0000;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:transform .2s,box-shadow .2s;box-shadow:0 4px 24px rgba(255,0,0,.5)}
+.yt-facade:hover .yt-facade-btn{transform:scale(1.1);box-shadow:0 6px 32px rgba(255,0,0,.7)}
+.yt-facade-btn svg{margin-left:5px}
+/* Placeholder when no ID set */
+.modal-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem}
+.modal-placeholder-icon{font-size:3rem;color:var(--accent);opacity:.4}
+.modal-placeholder-text{font-family:var(--mono);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);text-align:center;line-height:1.9}
+.modal-placeholder-text strong{color:var(--accent)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-d1{transition-delay:.1s}
+.reveal-d2{transition-delay:.2s}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  #hero{grid-template-columns:1fr;padding-top:7rem}
+  .hero-reel{display:none}
+  .hero-stats{position:static;margin-top:3rem}
+  .about-grid{grid-template-columns:1fr;gap:3rem}
+  .contact-cards{grid-template-columns:1fr}
+  .posters-grid{grid-template-columns:repeat(3,1fr)}
+  .reel-card.featured{max-width:100%}
+  nav{padding:1.2rem 1.5rem}
+  .nav-links{display:none}
+  .modal-box{width:92vw}
+}
+@media(max-width:640px){
+  nav{padding:1rem}
+  #hero,#reels,#works,#about,#contact{padding:4rem 1.2rem}
+  .posters-grid{grid-template-columns:repeat(2,1fr)}
+  .reels-grid{grid-template-columns:1fr}
+  .reel-card.featured{max-width:100%}
+  footer{flex-direction:column;gap:1rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">RDS<span>.</span>STUDIO</div>
+  <ul class="nav-links">
+    <li><a href="#reels">Demo Reels</a></li>
+    <li><a href="#works">Trabajos</a></li>
+    <li><a href="#about">Sobre Mi</a></li>
+    <li><a href="#contact">Contacto</a></li>
+  </ul>
+  <a href="https://www.imdb.com/name/nm11297706/?ref_=nv_sr_srsg_0_tt_0_nm_8_in_0_q_ruizdesotto/" target="_blank" rel="noopener" class="nav-cta">IMDb</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-bg-lines"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag">VFX Artist &amp; Compositor</div>
+    <h1 class="hero-title">
+      CREANDO<br>
+      <span class="outline">MUNDOS</span><br>
+      <span class="line-accent">IMPOSIBLES</span>
+    </h1>
+    <p class="hero-desc">Especialista en efectos visuales, composicion digital y animacion 3D. Transformando ideas en imagenes que desafian la realidad.</p>
+    <div class="hero-actions">
+      <a href="#reels" class="btn-primary">Ver Demo Reel</a>
+      <a href="#works" class="btn-secondary">Ver Trabajos</a>
+    </div>
+  </div>
+
+  <!-- Hero reel preview — cambia TU_ID_YOUTUBE_1 -->
+  <div class="hero-reel" onclick="openModal('SHOWREEL 2024', '5523cTBVjDg')">
+    <div class="reel-visual-bg">
+      <div class="rc-1" style="position:absolute;inset:0"></div>
+      <div class="reel-thumb" id="hero-thumb"></div>
+      <div class="reel-thumb-tint" style="z-index:2"></div>
+      <div class="reel-orb orb1"></div>
+      <div class="reel-orb orb2"></div>
+      <div class="reel-orb orb3"></div>
+      <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.15;z-index:3;pointer-events:none" viewBox="0 0 800 450" preserveAspectRatio="none">
+        <line x1="400" y1="0" x2="400" y2="450" stroke="#e8ff00" stroke-width="0.5"/>
+        <line x1="0" y1="225" x2="800" y2="225" stroke="#e8ff00" stroke-width="0.5"/>
+        <circle cx="400" cy="225" r="100" stroke="#e8ff00" stroke-width="0.5" fill="none"/>
+        <circle cx="400" cy="225" r="180" stroke="#00d4ff" stroke-width="0.3" fill="none" stroke-dasharray="5,10"/>
+        <polygon points="400,125 480,250 320,250" stroke="#ff3c5f" stroke-width="0.5" fill="none"/>
+      </svg>
+    </div>
+    <div class="reel-overlay">
+      <div class="play-btn">
+        <svg width="18" height="20" viewBox="0 0 18 20" fill="none"><path d="M2 1.5l14 8.5-14 8.5V1.5z" fill="#e8ff00"/></svg>
+      </div>
+    </div>
+    <div class="reel-label"><strong>&#9654;</strong> SHOWREEL &mdash; <strong>2024</strong></div>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Proyectos</span></div>
+    <div class="stat"><span class="stat-num">8</span><span class="stat-label">Anos de Exp.</span></div>
+    <div class="stat"><span class="stat-num">12</span><span class="stat-label">Clientes</span></div>
+    <div class="stat"><span class="stat-num">3</span><span class="stat-label">Awards</span></div>
+  </div>
+</section>
+
+<!-- DEMO REELS -->
+<section id="reels">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">// 01 - Demo Reels</div>
+      <h2 class="section-title">SHOWREELS<br>&amp; BREAKDOWNS</h2>
+    </div>
+    <a href="#" class="section-link">Ver todos</a>
+  </div>
+
+  <div class="reels-grid">
+
+    <!-- REEL PRINCIPAL — ocupa el ancho completo centrado -->
+    <div class="reel-card featured reveal" data-ytid="5523cTBVjDg" onclick="openModal('SHOWREEL 2024', this.dataset.ytid)">
+      <div class="reel-card-bg rc-1"></div>
+      <div class="reel-thumb"></div>
+      <div class="reel-thumb-tint"></div>
+      <div class="reel-card-overlay"></div>
+      <div class="reel-card-content">
+        <div class="reel-card-top">
+          <span class="reel-badge badge-vfx">VFX Reel</span>
+          <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
+        </div>
+        <div>
+          <div class="reel-card-title">SHOWREEL 2024</div>
+          <div class="reel-card-meta"><span>3:42</span><span>VFX / Compositing / 3D</span><span>2024</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 1 — dos videos -->
+    <div class="reel-card reveal" data-ytid="TU_ID_YOUTUBE_2" onclick="openModal('MOTION GRAPHICS REEL', this.dataset.ytid)">
+      <div class="reel-card-bg rc-2"></div>
+      <div class="reel-thumb"></div>
+      <div class="reel-thumb-tint"></div>
+      <div class="reel-card-overlay"></div>
+      <div class="reel-card-content">
+        <div class="reel-card-top">
+          <span class="reel-badge badge-motion">Motion</span>
+          <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
+        </div>
+        <div>
+          <div class="reel-card-title">MOTION GRAPHICS</div>
+          <div class="reel-card-meta"><span>2:15</span><span>After Effects</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reel-card reveal reveal-d1" data-ytid="TU_ID_YOUTUBE_3" onclick="openModal('VFX BREAKDOWN REEL', this.dataset.ytid)">
+      <div class="reel-card-bg rc-3"></div>
+      <div class="reel-thumb"></div>
+      <div class="reel-thumb-tint"></div>
+      <div class="reel-card-overlay"></div>
+      <div class="reel-card-content">
+        <div class="reel-card-top">
+          <span class="reel-badge badge-comp">Compositing</span>
+          <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
+        </div>
+        <div>
+          <div class="reel-card-title">VFX BREAKDOWN</div>
+          <div class="reel-card-meta"><span>4:10</span><span>Nuke / Fusion</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FILA 2 — dos videos -->
+    <div class="reel-card reveal" data-ytid="TU_ID_YOUTUBE_4" onclick="openModal('3D ANIMATION REEL', this.dataset.ytid)">
+      <div class="reel-card-bg rc-4"></div>
+      <div class="reel-thumb"></div>
+      <div class="reel-thumb-tint"></div>
+      <div class="reel-card-overlay"></div>
+      <div class="reel-card-content">
+        <div class="reel-card-top">
+          <span class="reel-badge badge-3d">3D</span>
+          <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
+        </div>
+        <div>
+          <div class="reel-card-title">3D ANIMATION</div>
+          <div class="reel-card-meta"><span>2:55</span><span>Cinema 4D / Houdini</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reel-card reveal reveal-d1" data-ytid="TU_ID_YOUTUBE_5" onclick="openModal('REEL 5', this.dataset.ytid)">
+      <div class="reel-card-bg rc-1"></div>
+      <div class="reel-thumb"></div>
+      <div class="reel-thumb-tint"></div>
+      <div class="reel-card-overlay"></div>
+      <div class="reel-card-content">
+        <div class="reel-card-top">
+          <span class="reel-badge badge-vfx">VFX Reel</span>
+          <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
+        </div>
+        <div>
+          <div class="reel-card-title">REEL 5</div>
+          <div class="reel-card-meta"><span>0:00</span><span>Tu software</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WORKS -->
+<section id="works">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">// 02 - Proyectos</div>
+      <h2 class="section-title">PELICULAS<br>&amp; PROYECTOS</h2>
+    </div>
+    <a href="#" class="section-link">Ver todos</a>
+  </div>
+  <div class="works-filter reveal">
+    <button class="filter-btn active" onclick="filterWorks('all',this)">Todos</button>
+    <button class="filter-btn" onclick="filterWorks('netflix',this)">Netflix</button>
+    <button class="filter-btn" onclick="filterWorks('prime',this)">Prime Video</button>
+    <button class="filter-btn" onclick="filterWorks('disney',this)">Disney+</button>
+    <button class="filter-btn" onclick="filterWorks('others',this)">Others</button>
+  </div>
+
+  <!-- ============================================================
+       INSTRUCCIONES PARA AÑADIR TUS POSTERS:
+       En cada .work-poster-img, cambia src="TU_IMAGEN_X.jpg"
+       por la ruta de tu imagen. Puede ser:
+         - Un archivo local:  src="poster1.jpg"  (debe estar en la misma carpeta que este HTML)
+         - Una URL online:    src="https://ejemplo.com/poster.jpg"
+       ============================================================ -->
+
+  <div class="posters-grid reveal">
+
+    <!-- POSTER 1 — tall (ocupa 2 filas) -->
+    <div class="poster-item tall" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/gaua-975882718-large.jpg" alt="Proyecto 1" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 1</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_1.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2024</div>
+          <div class="poster-title">Gaua</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 2 -->
+    <div class="poster-item" data-cat="netflix">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/la_casa_de_papel-844739080-large.jpg" alt="Proyecto 2" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 2</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_2.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2021</div>
+          <div class="poster-title">La casa de papel</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 3 -->
+    <div class="poster-item" data-cat="netflix">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/cien_anos_de_soledad-606630216-large.jpg" alt="Proyecto 3" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 3</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_3.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2024</div>
+          <div class="poster-title">Cien años de soledad</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 4 — wide (ocupa 2 columnas) -->
+    <div class="poster-item wide" data-cat="netflix">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/sky_rojo-722991651-large.jpg" alt="Proyecto 4" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 4 (horizontal)</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_4.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2021</div>
+          <div class="poster-title">Sky Rojo</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 5 -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/irati-412669481-large.jpg" alt="Proyecto 5" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 5</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_5.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2022</div>
+          <div class="poster-title">Irati</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 6 -->
+    <div class="poster-item" data-cat="disney">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/cristobal_balenciaga-794914050-large.jpg" alt="Proyecto 6" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 6</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_6.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2024</div>
+          <div class="poster-title">Balenciaga</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 7 — tall (ocupa 2 filas) -->
+    <div class="poster-item tall" data-cat="Netflix">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/hermana_muerte-203218447-large.jpg" alt="Proyecto 7" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 7</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_7.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2023</div>
+          <div class="poster-title">Hermana muerte</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 8 -->
+    <div class="poster-item" data-cat="prime">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/sin_limites-260083152-large.jpg" alt="Proyecto 8" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 8</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_8.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2022</div>
+          <div class="poster-title">Sin limites</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+        <!-- POSTER 9 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="prime">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/el_cid-121690815-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2020</div>
+          <div class="poster-title">El Cid</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+        <!-- POSTER 10 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="netflix">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/la_noche_mas_larga-269608513-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2022</div>
+          <div class="poster-title">La noche mas larga</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 11 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/ena_la_reina_victoria_eugenia-616255892-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2025</div>
+          <div class="poster-title">Ena. La reina Victoria Eugenia</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 12 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="prime">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/historias_para_no_dormir-685623910-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2022</div>
+          <div class="poster-title">Historias para no dormir</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 13 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="prime">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/dime_tu_nombre-141328414-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2025</div>
+          <div class="poster-title">Dime tu nombre</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 14 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/las_buenas_companias-121802604-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2025</div>
+          <div class="poster-title">Las buenas compañias</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 15 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/los_protegidos_un_nuevo_poder-520864274-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2025</div>
+          <div class="poster-title">Los protegidos</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 16 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/la_ruta-121734365-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2022</div>
+          <div class="poster-title">La Ruta</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 17 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/manticora-528006327-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2022</div>
+          <div class="poster-title">Manticora</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 18 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/mari_dos-119061049-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2023</div>
+          <div class="poster-title">Maridos</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 19 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/mikaela-727903164-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2025</div>
+          <div class="poster-title">Mikaela</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+     <!-- POSTER 20 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/segunda_muerte-677813938-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2024</div>
+          <div class="poster-title">Segunda muerte</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 21 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/v_h_s_halloween-960789893-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2025</div>
+          <div class="poster-title">V/H/S/Halloween</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- POSTER 22 — cambia el número y los datos -->
+    <div class="poster-item" data-cat="others">
+      <div class="poster-frame">
+        <img class="work-poster-img" src="https://pics.filmaffinity.com/segundo_premio-839408415-large.jpg" alt="Proyecto 9"
+            onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="poster-placeholder">
+          <div class="poster-placeholder-icon">&#128444;</div>
+          <div class="poster-placeholder-label">poster 9</div>
+          <div class="poster-placeholder-hint">src="TU_IMAGEN_9.jpg"</div>
+        </div>
+      </div>
+      <div class="poster-overlay">
+        <div class="poster-info">
+          <div class="poster-year">2024</div>
+          <div class="poster-title">Segundo premio</div>
+          <div class="poster-role">VFX</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-label">// 03 - Sobre Mi</div>
+      <h2 class="section-title">ARTISTA<br>DETRAS<br>DE LOS FX</h2>
+    </div>
+  </div>
+  <div class="about-grid">
+    <div class="about-visual reveal">
+      <div class="about-frame">
+        <div class="about-frame-bg">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;opacity:.25" viewBox="0 0 400 500" preserveAspectRatio="none">
+            <circle cx="200" cy="250" r="120" stroke="#e8ff00" stroke-width="0.8" fill="none"/>
+            <circle cx="200" cy="250" r="180" stroke="#00d4ff" stroke-width="0.4" fill="none" stroke-dasharray="4,10"/>
+            <line x1="80" y1="250" x2="320" y2="250" stroke="#e8ff00" stroke-width="0.5"/>
+            <line x1="200" y1="130" x2="200" y2="370" stroke="#e8ff00" stroke-width="0.5"/>
+            <polygon points="200,170 260,275 140,275" stroke="#ff3c5f" stroke-width="0.6" fill="none"/>
+          </svg>
+          <div style="position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);white-space:nowrap">Tu Nombre Aqui</div>
+          <div style="position:absolute;top:1rem;right:1rem;font-family:var(--mono);font-size:.55rem;letter-spacing:.15em;color:var(--accent);opacity:.7">VFX ARTIST v1.0</div>
+        </div>
+      </div>
+      <div class="about-ornament"><div class="about-ornament-inner"></div></div>
+      <div class="about-corner"></div>
+      <div class="about-label-side">VFX PORTFOLIO 2024</div>
+    </div>
+    <div class="reveal reveal-d1">
+      <div class="section-label" style="margin-bottom:1rem">// Artista VFX</div>
+      <p class="about-text">Con mas de 8 anos de experiencia en la industria del cine y la television, me especializo en crear efectos visuales que transportan al espectador a universos que desafian la imaginacion.</p>
+      <p class="about-text">He colaborado con productoras nacionales e internacionales, aportando mi vision artistica y conocimiento tecnico para dar vida a historias unicas.</p>
+      <div class="about-skills">
+        <div class="skill-item" style="--w:95%"><div class="skill-name">VFX / Simulaciones</div><div class="skill-level">95% Experto</div></div>
+        <div class="skill-item" style="--w:88%"><div class="skill-name">3D Modelado</div><div class="skill-level">88% Avanzado</div></div>
+        <div class="skill-item" style="--w:80%"><div class="skill-name">Match Moving</div><div class="skill-level">80% Avanzado</div></div>
+        <div class="skill-item" style="--w:92%"><div class="skill-name">Retocuhing</div><div class="skill-level">92% Experto</div></div>
+      </div>
+      <div class="section-label" style="margin-bottom:.8rem">// Software</div>
+      <div class="about-softwares">
+        <span class="software-tag">Maya</span>
+        <span class="software-tag">DaVinci Resolve</span>
+        <span class="software-tag">Embergen</span>
+        <span class="software-tag">Synteyes</span>
+        <span class="software-tag">Blender</span>
+        <span class="software-tag">DaVinci Resolve</span>
+        <span class="software-tag">Photoshop</span>
+        <span class="software-tag">Illustrator</span>
+        <span class="software-tag">Zbrush</span>
+        <span class="software-tag">Substance</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-glow"></div>
+  <div class="contact-section-inner">
+
+    <div class="section-header reveal">
+      <div>
+        <div class="section-label">// 04 - Contacto</div>
+        <h2 class="section-title">HABLEMOS<br>DE TU<br><span style="color:var(--accent)">PROYECTO</span></h2>
+      </div>
+    </div>
+
+    <p class="contact-subtitle reveal">Contacta conmigo para m&aacute;s informaci&oacute;n o descarga mi CV si lo necesitas.</p>
+
+    <div class="contact-cards reveal">
+
+      <!-- EMAIL — cambia TU_EMAIL@gmail.com por tu email real (solo en data-email) -->
+      <div class="contact-card" onclick="copyEmail(this)" data-email="ruiz.desotto@hotmai.com" style="cursor:pointer">
+        <div class="contact-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"/>
+            <path d="M2 7l10 7 10-7"/>
+          </svg>
+        </div>
+        <div class="contact-card-body">
+          <div class="contact-card-label">Email — <span class="email-hint">pasa el rat&oacute;n para ver</span></div>
+          <div class="contact-card-value">
+            <span class="email-hidden">&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;</span>
+            <span class="email-visible"></span>
+          </div>
+        </div>
+        <div class="contact-card-arrow copy-icon">⧉</div>
+      </div>
+
+      <!-- LINKEDIN — cambia TU_USUARIO por tu usuario de LinkedIn -->
+      <a href="https://www.linkedin.com/in/diego-ruiz-de-sotto-775321144//" target="_blank" rel="noopener" class="contact-card">
+        <div class="contact-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/>
+            <circle cx="4" cy="4" r="2"/>
+          </svg>
+        </div>
+        <div class="contact-card-body">
+          <div class="contact-card-label">LinkedIn</div>
+          <div class="contact-card-value">linkedin.com/in/Diego Ruiz de Sotto</div>
+        </div>
+        <div class="contact-card-arrow">→</div>
+      </a>
+
+      <!-- CV — cambia TU_ENLACE_DRIVE por el enlace de tu PDF en Google Drive -->
+      <a href="https://drive.google.com/file/d/1yQRLGLlQZIzgBmFJcd9dbDH0xetr4iYs/view?usp=sharing" target="_blank" rel="noopener" class="contact-card contact-card-highlight">
+        <div class="contact-card-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="12" y1="18" x2="12" y2="12"/>
+            <polyline points="9 15 12 18 15 15"/>
+          </svg>
+        </div>
+        <div class="contact-card-body">
+          <div class="contact-card-label">Curriculum Vitae</div>
+          <div class="contact-card-value">Descargar CV en PDF</div>
+        </div>
+        <div class="contact-card-arrow">↓</div>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-copy">&copy; 2024 VFX STUDIO &mdash; All rights reserved</div>
+  <div class="footer-socials">
+    <a href="#">Disney+</a>
+    <a href="#">Netflix</a>
+    <a href="#">Prime Video</a>
+    <a href="#">HBO</a>
+  </div>
+</footer>
+
+<!-- COPY TOAST -->
+<div class="copy-toast" id="copyToast">&#10003; Email copiado</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-box">
+    <div class="modal-top">
+      <div class="modal-video-title" id="modalTitle">VIDEO</div>
+      <button class="modal-close-btn" onclick="closeModal()">&#10005; Cerrar</button>
+    </div>
+    <div class="modal-video-area" id="modalArea"></div>
+  </div>
+</div>
+
+<script>
+// ── CURSOR ─────────────────────────────────────────────────────────────────
+var cur  = document.getElementById('cursor');
+var ring = document.getElementById('cursor-ring');
+var mx=0, my=0, rx=0, ry=0;
+document.addEventListener('mousemove', function(e){ mx=e.clientX; my=e.clientY; cur.style.left=mx+'px'; cur.style.top=my+'px'; });
+(function loop(){ rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('a,button,.reel-card,.work-item').forEach(function(el){
+  el.addEventListener('mouseenter', function(){ cur.style.width='20px'; cur.style.height='20px'; ring.style.width='60px'; ring.style.height='60px'; });
+  el.addEventListener('mouseleave', function(){ cur.style.width='12px'; cur.style.height='12px'; ring.style.width='36px'; ring.style.height='36px'; });
+});
+
+// ── THUMBNAILS ─────────────────────────────────────────────────────────────
+function loadThumb(thumbEl, ytId) {
+  if (!ytId || ytId.indexOf('TU_ID') !== -1) return; // placeholder, skip
+  var hq  = 'https://img.youtube.com/vi/' + ytId + '/maxresdefault.jpg';
+  var med = 'https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg';
+  var img = new Image();
+  img.onload = function() {
+    // maxresdefault returns a tiny grey image (120px wide) when unavailable
+    var url = (img.naturalWidth <= 120) ? med : hq;
+    thumbEl.style.backgroundImage = 'url(' + url + ')';
+    thumbEl.classList.add('loaded');
+  };
+  img.onerror = function() {
+    thumbEl.style.backgroundImage = 'url(' + med + ')';
+    thumbEl.classList.add('loaded');
+  };
+  img.src = hq;
+}
+
+// Load thumbnails for all reel cards using data-ytid attribute
+document.querySelectorAll('.reel-card[data-ytid]').forEach(function(card) {
+  var thumb = card.querySelector('.reel-thumb');
+  if (thumb) loadThumb(thumb, card.dataset.ytid);
+});
+
+// Load thumbnail for hero reel (reads ytid from its onclick)
+(function(){
+  var heroReel = document.querySelector('.hero-reel');
+  if (!heroReel) return;
+  var m = (heroReel.getAttribute('onclick') || '').match(/',\s*'([^']+)'\)/);
+  if (m) {
+    var heroThumb = document.getElementById('hero-thumb');
+    if (heroThumb) loadThumb(heroThumb, m[1]);
+  }
+})();
+
+// ── EMAIL REVEAL + COPY ────────────────────────────────────────────────────
+// Show real email on hover, copy to clipboard on click
+document.querySelectorAll('.contact-card[data-email]').forEach(function(card) {
+  var email = card.getAttribute('data-email');
+  var visible = card.querySelector('.email-visible');
+  if (visible) visible.textContent = email;
+});
+
+function copyEmail(card) {
+  var email = card.getAttribute('data-email');
+  if (!email) return;
+  navigator.clipboard.writeText(email).then(function() {
+    var toast = document.getElementById('copyToast');
+    toast.classList.add('show');
+    setTimeout(function(){ toast.classList.remove('show'); }, 2500);
+  });
+}
+
+// ── SCROLL REVEAL ──────────────────────────────────────────────────────────
+var io = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, {threshold: 0.12});
+document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+// ── FILTER ─────────────────────────────────────────────────────────────────
+function filterWorks(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('.poster-item').forEach(function(item){
+    var show = (cat === 'all' || item.dataset.cat === cat);
+    item.style.opacity   = show ? '1' : '0.1';
+    item.style.transform = show ? 'scale(1)' : 'scale(0.97)';
+  });
+}
+
+// ── MODAL ──────────────────────────────────────────────────────────────────
+function openModal(title, ytId) {
+  document.getElementById('modalTitle').textContent = title;
+  var area = document.getElementById('modalArea');
+  area.innerHTML = '';
+
+  var isReal = ytId && ytId.indexOf('TU_ID') === -1;
+
+  if (isReal) {
+    // Show thumbnail with a play button (facade).
+    // Clicking it swaps to the real iframe — this works from local files too.
+    var thumbUrl = 'https://img.youtube.com/vi/' + ytId + '/hqdefault.jpg';
+    var facade = document.createElement('div');
+    facade.className = 'yt-facade';
+    facade.innerHTML =
+      '<div class="yt-facade-img" style="background-image:url(' + thumbUrl + ')"></div>' +
+      '<div class="yt-facade-btn">' +
+        '<svg width="22" height="24" viewBox="0 0 22 24" fill="none">' +
+          '<path d="M2 2l18 10L2 22V2z" fill="white"/>' +
+        '</svg>' +
+      '</div>';
+    facade.addEventListener('click', function() {
+      // Replace facade with actual YouTube iframe on click
+      area.innerHTML = '';
+      var iframe = document.createElement('iframe');
+      iframe.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;border:none';
+      iframe.src = 'https://www.youtube.com/embed/' + ytId + '?autoplay=1&rel=0';
+      iframe.setAttribute('allowfullscreen', '');
+      iframe.setAttribute('allow', 'autoplay; fullscreen');
+      area.appendChild(iframe);
+    });
+    area.appendChild(facade);
+  } else {
+    area.innerHTML =
+      '<div class="modal-placeholder">' +
+        '<div class="modal-placeholder-icon">&#9654;</div>' +
+        '<div class="modal-placeholder-text">' +
+          'Reemplaza <strong>TU_ID_YOUTUBE_X</strong><br>' +
+          'con el ID de tu video de YouTube.' +
+        '</div>' +
+      '</div>';
+  }
+
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modalArea').innerHTML = ''; // stops video
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modalOverlay').addEventListener('click', function(e){
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', function(e){
+  if (e.key === 'Escape') closeModal();
+});
+
+// ── FORM ──────────────────────────────────────────────────────────
+function submitForm(e) {
+  e.preventDefault();
+  var btn = e.target.querySelector('.form-submit');
+  btn.textContent = 'Mensaje Enviado!';
+  btn.style.background = 'var(--accent3)';
+  setTimeout(function(){
+    btn.textContent = 'Enviar Mensaje →';
+    btn.style.background = 'var(--accent)';
+    e.target.reset();
+  }, 3000);
+}
+</script>
+</body>
+</html>
