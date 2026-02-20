@@ -117,10 +117,10 @@ section{position:relative}
 .reel-card-content{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;justify-content:space-between;padding:1.2rem}
 .reel-card-top{display:flex;justify-content:space-between;align-items:flex-start}
 .reel-badge{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;text-transform:uppercase;padding:.3rem .7rem;border:1px solid;backdrop-filter:blur(8px)}
-.badge-vfx{color:var(--accent);border-color:rgba(232,255,0,.4);background:rgba(232,255,0,.06)}
-.badge-motion{color:var(--accent3);border-color:rgba(0,212,255,.4);background:rgba(0,212,255,.06)}
-.badge-comp{color:var(--accent2);border-color:rgba(255,60,95,.4);background:rgba(255,60,95,.06)}
-.badge-3d{color:#b57aff;border-color:rgba(181,122,255,.4);background:rgba(181,122,255,.06)}
+.badge-vfx{color:var(--accent);border-color:rgba(from var(--accent) r g b / .4);background:rgba(from var(--accent) r g b / .06)}
+.badge-motion{color:var(--accent);border-color:rgba(from var(--accent) r g b / .4);background:rgba(from var(--accent) r g b / .06)}
+.badge-comp{color:var(--accent);border-color:rgba(from var(--accent) r g b / .4);background:rgba(from var(--accent) r g b / .06)}
+.badge-3d{color:var(--accent);border-color:rgba(from var(--accent) r g b / .4);background:rgba(from var(--accent) r g b / .06)}
 .reel-play{width:42px;height:42px;border:1px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.5);opacity:0;transform:scale(.85);transition:opacity .2s,transform .2s,background .2s}
 .reel-card:hover .reel-play{opacity:1;transform:scale(1);background:rgba(from var(--accent) r g b / .12);border-color:var(--accent)}
 .reel-card-title{font-family:var(--display);font-size:1.4rem;line-height:1;margin-bottom:.4rem;letter-spacing:.02em}
@@ -316,9 +316,9 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
   <div class="hero-content">
     <div class="hero-tag">VFX &amp; 3D Artist</div>
     <h1 class="hero-title">
-      CREANDO<br>
-      <span class="outline">MUNDOS</span><br>
-      <span class="line-accent">IMPOSIBLES</span>
+      DIEGO<br>
+      <span class="outline">RUIZ</span><br>
+      <span class="line-accent">DE SOTTO</span>
     </h1>
     <p class="hero-desc">Especialista en efectos visuales, composici&oacute;n digital y animaci&oacute;n 3D. Transformando ideas en im&aacute;genes que desafian la realidad.</p>
     <div class="hero-actions">
@@ -354,7 +354,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
 
   <div class="hero-stats">
     <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Proyectos</span></div>
-    <div class="stat"><span class="stat-num">9+</span><span class="stat-label">Anos de Exp.</span></div>
+    <div class="stat"><span class="stat-num">9+</span><span class="stat-label">Años de Exp.</span></div>
     <div class="stat"><span class="stat-num">10+</span><span class="stat-label">Clientes</span></div>
     <div class="stat"><span class="stat-num">3</span><span class="stat-label">Awards</span></div>
   </div>
@@ -398,7 +398,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
       <div class="reel-card-overlay"></div>
       <div class="reel-card-content">
         <div class="reel-card-top">
-          <span class="reel-badge badge-motion">Motion</span>
+          <span class="reel-badge badge-vfx">VFX Reel</span>
           <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
         </div>
         <div>
@@ -415,7 +415,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
       <div class="reel-card-overlay"></div>
       <div class="reel-card-content">
         <div class="reel-card-top">
-          <span class="reel-badge badge-comp">Compositing</span>
+          <span class="reel-badge badge-vfx">VFX Reel</span>
           <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
         </div>
         <div>
@@ -433,7 +433,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
       <div class="reel-card-overlay"></div>
       <div class="reel-card-content">
         <div class="reel-card-top">
-          <span class="reel-badge badge-3d">3D</span>
+          <span class="reel-badge badge-vfx">VFX Reel</span>
           <div class="reel-play"><svg width="12" height="14" viewBox="0 0 12 14" fill="none"><path d="M1 1l10 6-10 6V1z" fill="white"/></svg></div>
         </div>
         <div>
