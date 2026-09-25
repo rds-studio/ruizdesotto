@@ -42,8 +42,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:9999;isolation:isolate;transform
 /* HERO */
 #hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;padding:8rem 3rem 4rem;position:relative;overflow:hidden}
 .hero-bg-lines{position:absolute;inset:0;background:linear-gradient(90deg,var(--border) 1px,transparent 1px),linear-gradient(var(--border) 1px,transparent 1px);background-size:80px 80px;opacity:.4}
-.hero-glow{position:absolute;top:-20%;right:-10%;width:60vw;height:60vw;background:radial-gradient(ellipse,rgba(232,255,0,.06),transparent 60%);pointer-events:none}
-.hero-glow2{position:absolute;bottom:-10%;left:5%;width:40vw;height:40vw;background:radial-gradient(ellipse,rgba(0,212,255,.05),transparent 60%);pointer-events:none}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:60vw;height:60vw;background:radial-gradient(ellipse,rgba(from var(--accent) r g b / .06),transparent 60%);pointer-events:none}
+.hero-glow2{position:absolute;bottom:-10%;left:5%;width:40vw;height:40vw;background:radial-gradient(ellipse,rgba(from var(--accent) r g b / .06),transparent 60%);pointer-events:none}
 .hero-content{position:relative;z-index:1}
 .hero-tag{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem;opacity:0;animation:fadeUp .8s .2s forwards}
 .hero-tag::before{content:'';width:30px;height:1px;background:var(--accent)}
@@ -336,7 +336,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
   </div>
 
   <!-- Hero reel preview — cambia TU_ID_YOUTUBE_1 -->
-  <div class="hero-reel" onclick="openModal('SHOWREEL 2024', '5523cTBVjDg')">
+  <div class="hero-reel" onclick="openModal('SHOWREEL 2024', 'TajRpACcIYw')">
     <div class="reel-visual-bg">
       <div class="rc-1" style="position:absolute;inset:0"></div>
       <div class="reel-thumb" id="hero-thumb"></div>
@@ -378,10 +378,17 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     <a href="#" class="section-link">Ver todos</a>
   </div>
 
+   <!-- ============================================================
+       INSTRUCCIONES PARA CAMBIAR VIDEOS:
+       En data-ytid hay que poner el codigo final de la url del video de youtube
+       Esto no https://www.youtube.com/watch?v=TajRpACcIYw
+       Esto si TajRpACcIYw
+       ============================================================ -->
+
   <div class="reels-grid">
 
     <!-- REEL PRINCIPAL — ocupa el ancho completo centrado -->
-    <div class="reel-card featured reveal" data-ytid="5523cTBVjDg" onclick="openModal('SHOWREEL 2024', this.dataset.ytid)">
+    <div class="reel-card featured reveal" data-ytid="TajRpACcIYw" onclick="openModal('SHOWREEL 2024', this.dataset.ytid)">
       <div class="reel-card-bg rc-1"></div>
       <div class="reel-thumb"></div>
       <div class="reel-thumb-tint"></div>
@@ -399,7 +406,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
     </div>
 
     <!-- FILA 1 — dos videos -->
-    <div class="reel-card reveal" data-ytid="TU_ID_YOUTUBE_2" onclick="openModal('MOTION GRAPHICS REEL', this.dataset.ytid)">
+    <div class="reel-card reveal" data-ytid="5523cTBVjDg" onclick="openModal('MOTION GRAPHICS REEL', this.dataset.ytid)">
       <div class="reel-card-bg rc-2"></div>
       <div class="reel-thumb"></div>
       <div class="reel-thumb-tint"></div>
@@ -467,6 +474,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
         </div>
       </div>
     </div>
+    
 
   </div>
 </section>
@@ -489,7 +497,7 @@ footer{padding:2rem 3rem;border-top:1px solid var(--border);display:flex;justify
   </div>
 
   <!-- ============================================================
-       INSTRUCCIONES PARA AÑADIR TUS POSTERS:
+       INSTRUCCIONES PARA ANADIR TUS POSTERS:
        En cada .work-poster-img, cambia src="TU_IMAGEN_X.jpg"
        por la ruta de tu imagen. Puede ser:
          - Un archivo local:  src="poster1.jpg"  (debe estar en la misma carpeta que este HTML)
